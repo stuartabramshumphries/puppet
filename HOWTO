@@ -1,1 +1,29 @@
 Quick custom fact howto
+
+fact is basic script that provides info about a system - usually ruby 
+fact is referred to as a resolution in more strict parlance - the fact is the output of the resolution
+
+-> a call to facter.add - introduces new fact
+-> zero or more confine statements - determines if resolution is suitable (e.g. tests what os first)
+-> optional has_weight statement - if mutiple resolutions are available for a fact re evalled from highest to lowest
+-> setcode statement that determines the value of a fact
+
+usually place custom fact in $moduledir/lib/facts
+can test on command line:
+
+export FACTERLIB=/etc/puppet/modules/shizzle/lib/facter:$FACTERLIB
+
+in /etc/puppet/modules/shizzle/lib/facter I've placed my sample fact about.rb:
+
+require 'facter'
+Facter.add(:about) do
+  setcode do
+    Facter::Util::Resolution.exec("cat /etc/about")
+  end
+end
+
+
+this just gives info about the nodes use:
+
+> facter about
+mongodb server
